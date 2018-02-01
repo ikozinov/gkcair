@@ -99,7 +99,7 @@ ssl_bump splice all
 {% if HTTP_TRANSPARENT_PORT|default:"" != "" %}
 # прозрачный порт указывается опцией intercept
 # Сюда нужно перенапрявлять траффик с iptables
-http_port {{HTTP_TRANSPARENT_PORT}} intercept options=NO_SSLv3:NO_SSLv2 cert=/etc/squid4/ssl_cert/squidCA.pem
+http_port {{HTTP_TRANSPARENT_PORT}} intercept options=NO_SSLv3:NO_SSLv2
 {% endif %}
 
 {% if HTTPS_TRANSPARENT_PORT|default:"" != "" %}

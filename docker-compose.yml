@@ -19,15 +19,17 @@ services:
     image: "gkcair/squid4"
     ports:      
       - 3128:3128      # squid http non-transparent web-cache
-      - 3129:3129      # squid http transparent web-cache
-      - 3130:3130      # squid https transparent web-cache 
+      #- 3130:3130      # squid http transparent web-cache
+      #- 3129:3129      # squid https transparent web-cache
     environment:
       - SQUID_CA_CERT=/certs/squidCA.pem
       - DNS_SERVER=127.0.0.1
       - NETPOLICE_PROXY=yes
       - PLAIN_PROXY=yes
-      - MITM_PROXY=no
-      - SSL_BUMP_PEEK_AND_SLICE=no
+      - MITM_PROXY=
+      - SSL_BUMP_PEEK_AND_SLICE=
+      #- HTTP_TRANSPARENT_PORT=3130
+      #- HTTPS_TRANSPARENT_PORT=3129
     volumes:
       - ./squid4-cache:/var/cache/squid4
       - ./squid4-certs:/certs
