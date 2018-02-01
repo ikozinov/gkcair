@@ -25,8 +25,8 @@ services:
       - SQUID_CA_CERT=/certs/squidCA.pem
       - DNS_SERVER=127.0.0.1
       - NETPOLICE_PROXY=yes
-      - PLAIN_PROXY=no
-      - MITM_PROXY=yes
+      - PLAIN_PROXY=yes
+      - MITM_PROXY=no
       - SSL_BUMP_PEEK_AND_SLICE=no
     volumes:
       - ./squid4-cache:/var/cache/squid4
