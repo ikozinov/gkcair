@@ -1,0 +1,34 @@
+version: "3"
+
+services:
+  netpolice:
+    build:
+      context: "netpolice"
+    image: "gkcair/netpolice"
+    ports:
+      - 53:53/udp      # PowerDNS service
+      - 1344:1344      # NetPolice c-icap daemon
+      - 9000:9000      # NetPolice WebAdmin
+    volumes:
+      - ./netpolice-data:/var/lib/netpolice/      
+    network_mode: "host"
+
+  squid4:
+    build:
+      context: "squid4"
+    image: "gkcair/squid4"
+    ports:      
+      - 3128:3128      # squid http non-transparent web-cache
+      - 3129:3129      # squid http transparent web-cache
+      - 3130:3130      # squid https transparent web-cache 
+    environment:
+      - SQUID_CA_CERT=/certs/squidCA.pem
+      - DNS_SERVER=127.0.0.1
+      - NETPOLICE_PROXY=yes
+      - PLAIN_PROXY=no
+      - MITM_PROXY=yes
+      - SSL_BUMP_PEEK_AND_SLICE=no
+    volumes:
+      - ./squid4-cache:/var/cache/squid4
+      - ./squid4-certs:/certs
+    network_mode: "host"

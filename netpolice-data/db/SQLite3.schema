@@ -1,0 +1,90 @@
+CREATE TABLE admins (admid INTEGER PRIMARY KEY AUTOINCREMENT, aname TEXT UNIQUE, passwd TEXT, type TEXT NOT NULL);
+CREATE TABLE roles (rolid INTEGER PRIMARY KEY AUTOINCREMENT, rname TEXT UNIQUE, type TEXT NOT NULL);
+CREATE TABLE lists (lstid INTEGER PRIMARY KEY AUTOINCREMENT, rolid INTEGER NOT NULL, url TEXT NOT NULL, stars INTEGER NOT NULL, action INTEGER NOT NULL);
+CREATE TABLE perms (prmid INTEGER PRIMARY KEY AUTOINCREMENT, rolid INTEGER NOT NULL, cat INTEGER NOT NULL, action INTEGER NOT NULL);
+CREATE TABLE hierarchy (id INTEGER PRIMARY KEY, parent INTEGER NOT NULL, child INTEGER NOT NULL);
+CREATE TABLE users (useid INTEGER PRIMARY KEY AUTOINCREMENT, uname TEXT NOT NULL, addr INTEGER NOT NULL, mask INTEGER NOT NULL, rolid INTEGER NOT NULL);
+
+CREATE TABLE "categories" (
+    "cat" integer NOT NULL PRIMARY KEY,
+    "cname" varchar(255) NOT NULL,
+    "type" varchar(1) NOT NULL
+);
+
+CREATE TABLE "domains_categories" (
+    "id" integer NOT NULL PRIMARY KEY,
+    "did" integer NOT NULL REFERENCES "domains" ("did"),
+    "cat" integer NOT NULL REFERENCES "categories" ("cat")
+);
+CREATE INDEX "domains_categories_268eae00" ON "domains_categories" ("cat");
+CREATE INDEX "domains_categories_6eca04d5" ON "domains_categories" ("did");
+
+CREATE TABLE "domains" (
+    "did" integer NOT NULL PRIMARY KEY,
+    "dname" varchar(255) NOT NULL UNIQUE
+);
+
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (105, "Алкоголь", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (101, "Эротика, порнография", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (3, "Реклама, баннерные сервера", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (4, "Власти, правительство", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (5, "Авто", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (6, "Кино", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (7, "Строительство и ремонт", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (8, "Предметы потребления", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (9, "Кулинария", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (10, "Дача", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (11, "Курсы, обучение", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (12, "Электроника и электротехника", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (13, "Оборудование", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (14, "Семья", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (15, "Мода и стиль", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (16, "Финансы", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (17, "Изобразительное искусство", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (18, "Компьютеры, аппаратное обеспечение", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (19, "Здоровье", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (20, "Хобби", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (21, "Юмор", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (22, "Интерьер", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (23, "Доступ в интернет", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (24, "Семья", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (25, "Литература", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (26, "СМИ", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (27, "Машиностроение", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (28, "Металлургия", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (29, "Мобильная связь", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (30, "Музыка", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (31, "Общественные организации", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (113, "Компьютерные игры", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (33, "Домашние животные", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (34, "Фото", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (35, "Афиша", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (36, "Недвижимость", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (36, "Недвижимость", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (37, "Религия", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (38, "Школа", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (39, "Религия", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (40, "Спорт", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (41, "Театры", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (42, "Транспорт", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (43, "Туризм", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (44, "Университеты", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (111, "Работа и вакансии", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (46, "Создание сайтов", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (112, "Чаты", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (48, "Сайты знакомств", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (49, "Войска и вооружение", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (50, "Форумы и блоги", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (51, "Сервера бесплатной электронной почты", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (107, "Нелегальная помощь школьникам и студентам", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (54, "Убийства, насилие, трупы", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (110, "Онлайн-казино", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (102, "Социальные сети", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (57, "Терроризм", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (58, "Торговля", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (108, "Нижнее белье, купальники", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (109, "Обеспечение анонимности, обход контентных фильтров", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (103, "Службы обмена сообщениями", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (104, "Файлообменные сети и сайты", "g");
+INSERT INTO "categories" ("cat", "cname", "type") VALUES (106, "Табак", "g");
+

@@ -1,0 +1,14 @@
+CREATE TABLE admins (admid serial PRIMARY KEY, aname text UNIQUE, passwd text, type char NOT NULL);
+CREATE TABLE roles (rolid serial PRIMARY KEY, rname text UNIQUE, type char NOT NULL);
+CREATE TABLE lists (lstid serial PRIMARY KEY, rolid integer NOT NULL, url text NOT NULL, stars integer NOT NULL, action integer NOT NULL);
+CREATE TABLE perms (prmid serial PRIMARY KEY, rolid integer NOT NULL, cat integer NOT NULL, action integer NOT NULL);
+CREATE TABLE hierarchy (id  serial PRIMARY KEY, parent integer NOT NULL, child integer NOT NULL);
+CREATE TABLE users (useid serial PRIMARY KEY, uname text NOT NULL, addr bigint NOT NULL, mask bigint NOT NULL, rolid integer NOT NULL);
+
+CREATE TABLE "categories" (
+    "cat" serial NOT NULL PRIMARY KEY,
+    "cname" varchar(255) NOT NULL,
+    "type" varchar(1) NOT NULL
+);
+
+

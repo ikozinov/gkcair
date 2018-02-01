@@ -1,0 +1,6 @@
+# Format is: [uname]@[[address][/suffix]] role
+# if no username given, any uname matches
+# if no address given, default is 0.0.0.0/0
+# if no suffix given, default is /32
+
+@			admin

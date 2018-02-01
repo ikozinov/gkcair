@@ -1,0 +1,13 @@
+# Format is very simple
+# statement 'role role_name' must be at start of line
+# other statement have form: 'keyword arg [arg...]'
+# keywords are
+#	blacklist, whitelist for lists of URLs
+#	accept, reject, redirect for lists of categories
+#	parent for lists of parents
+#	exactmatch [on|true|1|off|false|0] to turn exactmatch
+#		if exactmatch is on, no '*' added to end of pattern
+#		exactmatch == exactmatch on
+
+role admin
+	reject 101 57

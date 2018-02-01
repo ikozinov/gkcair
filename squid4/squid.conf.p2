@@ -1,0 +1,112 @@
+# TEMPLATED CONFIGURATION FILE. UPDATED ON EACH RUN.
+
+# Default all logs to stdout and stderr
+logfile_rotate 0
+access_log stdio:/dev/stdout combined
+cache_store_log stdio:/dev/stdout
+cache_log /dev/stderr
+netdb_filename stdio:/var/cache/squid4/netdb.state
+
+# Visible hostname to allow multi-squid
+visible_hostname {{VISIBLE_HOSTNAME|default:"docker-squid4"}}
+
+{% if DISABLE_CACHE|default:"" != "yes" %}
+# Cache directory is fixed since we'll bind mount.
+cache_dir aufs /var/cache/squid4 {{MAX_CACHE_SIZE|default:"40000"}} 16 256
+{% endif %}
+
+maximum_object_size {{MAX_OBJECT_SIZE|default:"1536 MB"}}
+cache_mem {{MEM_CACHE_SIZE|default:"128 MB"}}
+
+tls_outgoing_options capath=/etc/ssl/certs \
+    options={{TLS_OPTIONS|default:"NO_SSLv3,NO_TLSv1"}} \
+    cipher=ALL:!RC4:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS
+    
+{% if MITM_PROXY|default:"" == "yes" %}
+http_port {{HTTP_PORT}}  ssl-bump \
+    generate-host-certificates=on \
+    dynamic_cert_mem_cache_size=4MB \
+    cert=/etc/squid4/ssl_cert/squidCA.pem 
+{% endif %}
+
+{% if MITM_PROXY|default:"" == "yes" %}
+ssl_bump server-first all
+{% endif %}
+
+{% if ICP_PORT|default:"" != "" %}
+icp_port {{ICP_PORT}}
+icp_access allow all
+{% endif %}
+
+{% if HTCP_PORT|default:"" != "" %}
+htcp_port {{HTCP_PORT}}
+htcp_access allow all
+{% endif %}
+
+{% if PLAIN_PROXY|default:"" == "yes" %}
+http_port {{HTTP_PORT}} 
+
+#sslproxy_cert_error allow all
+#sslproxy_flags DONT_VERIFY_PEER
+{% endif %}
+
+{% if NETPOLICE_PROXY|default:"" == "yes" %}
+# NetPolice ICAP integration
+icap_enable on
+icap_connect_timeout 100 second
+icap_io_timeout 100 second
+icap_preview_enable off
+adaptation_send_client_ip on
+# icap_client_username_encode off
+# Define ICAP services
+icap_service service_url_filter_req reqmod_precache bypass=0 icap://{{NETPOLICE_ICAP_ADDR}}:1344/url_filter
+icap_service service_url_filter_resp respmod_precache bypass=0 icap://{{NETPOLICE_ICAP_ADDR}}:1344/url_filter
+# Allow all clients access to adaptation chain for filtering
+adaptation_access service_url_filter_req allow all
+adaptation_access service_url_filter_resp allow all
+
+acl CONNECT method CONNECT
+adaptation_meta X-Sent-To-Icap "X-SQUID-HTTP-METHOD: connect" CONNECT
+
+icap_log /dev/stdout
+#/var/log/squid/icap.log
+{% endif %}
+
+{% if SSL_BUMP_PEEK_AND_SLICE|default:"" == "yes" %}
+# DNS config, for ssl bumpung we need this
+dns_nameservers {{ DNS_SERVER }}
+
+# Our ports configs
+# также нужно указать непрозрачный порт, ибо если захотите вручную указать адрес
+# прокси в браузере, указав прозрачный порт, вы получите ошибку доступа, поэтому нужно
+# указывать непрозрачный порт в браузере, если конечно такое желание будет, к тому же в логах 
+# сыпятся ошибки о том, что непрозрачный порт не указан=) 
+http_port 3128 ssl-bump connection-auth=off options=NO_SSLv3 cert=/etc/squid4/ssl_cert/squidCA.pem
+ 
+sslproxy_cert_error allow all
+sslproxy_flags DONT_VERIFY_PEER
+
+#ssl_bump peek all
+acl step1 at_step SslBump1
+ssl_bump peek step1
+ssl_bump splice all
+
+# укажем правило со списком блокируемых ресурсов (в файле домены вида .domain.com)
+# терминируем соединение, если клиент заходит на запрещенный ресурс из ACL blocked
+#ssl_bump terminate blocked
+{% endif %}
+
+{% if HTTP_TRANSPARENT_PORT|default:"" != "" %}
+# прозрачный порт указывается опцией intercept
+# Сюда нужно перенапрявлять траффик с iptables
+http_port {{HTTP_TRANSPARENT_PORT}} intercept options=NO_SSLv3:NO_SSLv2 cert=/etc/squid4/ssl_cert/squidCA.pem
+{% endif %}
+
+{% if HTTPS_TRANSPARENT_PORT|default:"" != "" %}
+# и наконец, указываем HTTPS порт с нужными опциями
+# Сюда нужно перенапрявлять траффик с iptables
+https_port {{HTTPS_TRANSPARENT_PORT}} intercept ssl-bump options=NO_SSLv3:NO_SSLv2 connection-auth=off cert=/etc/squid4/ssl_cert/squidCA.pem
+{% endif %}
+
+
+http_access allow all
