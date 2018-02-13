@@ -18,18 +18,26 @@ fi
 chown -R proxy: /var/cache/squid4
 chmod -R 750 /var/cache/squid4
 
-if [ ! -z $SSL_BUMP_PEEK_AND_SLICE ] || [ ! -z $MITM_PROXY ]; then
+if [ ! -z $SSL_BUMP_PEEK_AND_SLICE ] || [ ! -z $MITM_PROXY ]; then   
+    if [ -z $SQUID_CA_CERT ]; then
+        echo "Environment variable SQUID_CA_CERT was not specified, so using defaults." 1>&2
+
+		SQUID_CA_CERT=/etc/squid4/ssl_cert/squidCA.pem      
+    fi    
+
+	if [ ! -e $SQUID_CA_CERT ]; then
+        echo "WARNING: Squid RootCA certificate does not exist. Generating new CA certificate..." 1>&2
+
+		openssl req -new -newkey rsa:2048 -days 1825 -nodes -x509 \
+	    -subj "/C=RU/ST=LocalState/L=LocalCity/O=Filter/CN=proxy.localdomain" \
+	    -keyout $SQUID_CA_CERT -out $SQUID_CA_CERT
+	fi
+
     if [ ! -z $SQUID_CA_CERT ]; then
         echo "Copying $SQUID_CA_CERT as CA cert..."
         cp $SQUID_CA_CERT /etc/squid4/ssl_cert/squidCA.pem
         chown root:proxy /etc/squid4/ssl_cert/squidCA.pem
     fi
-    
-    if [ -z $SQUID_CA_CERT ]; then
-        echo "Must specify SQUID_CA_CERT variable in environment" 1>&2
-        exit 1
-       
-    fi    
 fi
 
 chown proxy: /dev/stdout
