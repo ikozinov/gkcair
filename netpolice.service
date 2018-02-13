@@ -1,0 +1,11 @@
+[Unit]
+Description=Netpolice bundle with c-icap, PowerDNS and squid4
+After=network.target docker.service
+[Service]
+Type=simple
+WorkingDirectory=/opt/gkcair
+ExecStart=/usr/local/bin/docker-compose -f /opt/gkcair/docker-compose.yml up
+ExecStop=/usr/local/bin/docker-compose -f /opt/gkcair/docker-compose.yml down
+#Restart=always
+[Install]
+WantedBy=multi-user.target
