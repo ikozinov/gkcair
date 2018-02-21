@@ -8,7 +8,7 @@ services:
     ports:
       - 53:53/udp      # PowerDNS service
       - 1344:1344      # NetPolice c-icap daemon
-      - 9000:9000      # NetPolice WebAdmin
+      - 0.0.0.0:9000:9000      # NetPolice WebAdmin
     volumes:
       - ./netpolice-data:/var/lib/netpolice/      
     network_mode: "host"

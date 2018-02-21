@@ -15,10 +15,9 @@ echo deb http://repo.netpolice.ru/ubuntu/ / > /etc/apt/sources.list.d/netpolice.
 apt-get update && apt-get install -y --force-yes mc busybox net-tools \
 netpolice-main
 
-RUN a2dissite default && echo "NameVirtualHost 127.0.0.1:9000" > /etc/apache2/ports.conf && \
-echo "Listen 127.0.0.1:9000" >> /etc/apache2/ports.conf && \
-cp /etc/powerdns/netpolice-pdns.conf /etc/powerdns/pdns.conf && \
-cp /etc/squid3/netpolice-squid.conf /etc/squid3/squid.conf
+RUN a2dissite default && echo "NameVirtualHost 0.0.0.0:9000" > /etc/apache2/ports.conf && \
+echo "Listen 0.0.0.0:9000" >> /etc/apache2/ports.conf && \
+cp /etc/powerdns/netpolice-pdns.conf /etc/powerdns/pdns.conf
 
 COPY entrypoint.sh /entrypoint.sh
 
