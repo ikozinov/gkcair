@@ -17,7 +17,7 @@ services:
   netpolice-stat:
     image: "gkcair/netpolice"
     environment:
-      EXPORT_STAT_CRON: "*/15 *	* * *"
+      EXPORT_STAT_CRON: "* */15	* * * *"
     user: "c-icap"
     entrypoint: "/export-stats.sh"
     network_mode: "host"    
