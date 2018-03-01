@@ -1,6 +1,6 @@
 #!/bin/sh
 
-chown root:www-data /var/lib/netpolice && chmod g+rw /var/lib/netpolice
+chown -R root:www-data /var/lib/netpolice && chmod -R g+rw /var/lib/netpolice
 /etc/init.d/memcached start && \
 /etc/init.d/pdns start && \
 /etc/init.d/netpolice-c-icap start && \
