@@ -12,13 +12,17 @@ ENV LANG=ru_RU.UTF-8 \
 
 RUN echo 'Acquire::ForceIPv4 "true";' > /etc/apt/apt.conf.d/99force-ipv4 && \
 echo deb http://repo.netpolice.ru/ubuntu/ / > /etc/apt/sources.list.d/netpolice.list && \
-apt-get update && apt-get install -y --force-yes mc busybox net-tools \
+apt-get update && apt-get install -y --force-yes mc busybox net-tools curl \
 netpolice-main
 
-RUN a2dissite default && echo "NameVirtualHost 0.0.0.0:9000" > /etc/apache2/ports.conf && \
+COPY entrypoint.sh export-stats.sh /
+
+RUN curl -o /usr/local/bin/mantra -L https://github.com/pugnascotia/mantra/releases/download/0.0.1/mantra && \
+chmod +x /usr/local/bin/mantra && \
+chmod +x /entrypoint.sh /export-stats.sh && \
+a2dissite default && echo "NameVirtualHost 0.0.0.0:9000" > /etc/apache2/ports.conf && \
 echo "Listen 0.0.0.0:9000" >> /etc/apache2/ports.conf && \
 cp /etc/powerdns/netpolice-pdns.conf /etc/powerdns/pdns.conf
 
-COPY entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]

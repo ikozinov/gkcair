@@ -1,4 +1,4 @@
-version: "3"
+version: "2"
 
 services:
   netpolice:
@@ -10,8 +10,19 @@ services:
       - 1344:1344      # NetPolice c-icap daemon
       - 0.0.0.0:9000:9000      # NetPolice WebAdmin
     volumes:
-      - ./netpolice-data:/var/lib/netpolice/      
+      - ./netpolice-data:/var/lib/netpolice/
+      - ./netpolice-log:/var/log/netpolice/
     network_mode: "host"
+
+  netpolice-stat:
+    image: "gkcair/netpolice"
+    environment:
+      EXPORT_STAT_CRON: "*/15 *	* * *"
+    user: "c-icap"
+    entrypoint: "/export-stats.sh"
+    network_mode: "host"    
+    volumes_from:
+      - netpolice
 
   squid4:
     build:
